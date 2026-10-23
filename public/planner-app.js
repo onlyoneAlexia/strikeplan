@@ -1,6 +1,6 @@
 import {calculatePlan,PAPER_RULES} from './risk.mjs';
 const $=id=>document.getElementById(id),money=n=>n==null?'—':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(n);
-let token=sessionStorage.getItem('signalbridge-token')||'',connected=false,mode='paper',direction='long',review=null,rules=PAPER_RULES,plans=[],generated=false,connectionDirty=false,toastTimer;
+let token=sessionStorage.getItem('signalbridge-token')||'',connected=false,mode='paper',direction='long',review=null,rules=PAPER_RULES,plans=[],generated=false,connectionDirty=false,toastTimer,hosted=false,refreshing=false;
 const fields=['budget','entry','stop','target','leverage','feeBps','slippageBps'];
 const input=()=>Object.fromEntries([['direction',direction],...fields.map(key=>[key,$(key).value])]);
 function toast(text){$('toast').textContent=text;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,6000)}
@@ -48,7 +48,7 @@ function renderPlans(){
 }
 async function loadPlans(){if(!connected)return;const data=await api('/api/planner/state');plans=data.plans;renderPlans()}
 async function refreshConnection(){
-  const s=await api('/api/state');connected=true;mode=s.mode;$('mode').textContent=mode==='paper'?'● PAPER SCENARIOS':'● STRIKE TESTNET';$('connection-label').textContent='● Server connected';$('login').hidden=true;$('setup-status').textContent=mode==='paper'?'Paper mode ready':s.credentialsReady?'Testnet configured':'Testnet keys required';
+  const s=await api('/api/state');hosted=Boolean(s.hosted);if(hosted){$('connection-form').hidden=true;$('setup-status').textContent='Hosted settings are managed in Vercel. Status refreshes while this page is open.'}connected=true;mode=s.mode;$('mode').textContent=mode==='paper'?'● PAPER SCENARIOS':'● STRIKE TESTNET';$('connection-label').textContent='● Server connected';$('login').hidden=true;$('setup-status').textContent=mode==='paper'?'Paper mode ready':s.credentialsReady?'Testnet configured':'Testnet keys required';
   if(!connectionDirty){$('execution-mode').value=mode;$('public-key').value=s.publicKey||'';$('sub-account').value=s.subAccount||''}
   $('account-status').textContent=mode==='paper'?'Paper scenarios ready. No account, public webhook or TradingView subscription needed.':s.account?.error?`Account check: ${s.account.error}`:s.account?.checkedAt?`Last Strike position check: ${s.account.size} BTC. Use a dedicated account.`:'Testnet configured. Refresh the position and inspect protection after submission.';
 }
@@ -65,4 +65,4 @@ $('refresh-plans').addEventListener('click',async()=>{try{const result=await api
 $('export-plans').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(plans,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='strikeplan-plans.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
 calculate();
 async function boot(){try{if(!token){const r=await fetch('/api/local-session',{method:'POST'});if(!r.ok)return;token=(await r.json()).token}await connect()}catch(e){connected=false;$('login').hidden=false;$('connection-label').textContent='Calculator only';$('account-status').textContent='Start npm.cmd start and open localhost:8787, or enter a valid dashboard token.'}}
-boot();setInterval(()=>{if(connected)loadPlans().catch(()=>{})},4000);
+boot();setInterval(async()=>{if(!connected||refreshing||document.hidden)return;refreshing=true;try{if(hosted){const data=await api('/api/planner/refresh',{method:'POST',body:'{}'});plans=data.plans;renderPlans()}else await loadPlans()}catch{}finally{refreshing=false}},15000);

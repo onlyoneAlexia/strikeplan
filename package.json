@@ -9,6 +9,9 @@
     "token": "node -e \"console.log(JSON.parse(require('fs').readFileSync('.data/secrets.json')).admin)\""
   },
   "engines": {
-    "node": ">=24"
+    "node": "24.x"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
   }
 }

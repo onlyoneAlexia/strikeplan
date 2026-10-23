@@ -12,3 +12,6 @@ artifacts/*
 !artifacts/strikeplan-testnet-verification.json
 scripts/verify-public.mjs
 public/app.js
+
+dist/
+.vercel/
