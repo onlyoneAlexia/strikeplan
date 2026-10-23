@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.data/
+node_modules/
+*.log
+docs/legacy-signalbridge.md
+artifacts/*
+!artifacts/strikeplan-calculator.png
+!artifacts/strikeplan-desktop.png
+!artifacts/strikeplan-paper-demo.webm
+!artifacts/strikeplan-testnet-verification.json
+scripts/verify-public.mjs
+public/app.js

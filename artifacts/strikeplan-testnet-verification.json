@@ -1,0 +1,54 @@
+{
+  "verifiedAt": "2026-10-23T10:17:52.421Z",
+  "mode": "testnet",
+  "verification": "Testnet entry filled; protective orders observed armed; user manually closed position; API verified flat exposure and no open orders.",
+  "plans": [
+    {
+      "id": "8ed97c8d-2eec-4459-89d1-5e134d5d3bc4",
+      "status": "closed",
+      "entry": "filled",
+      "stop": "canceled",
+      "target": "canceled",
+      "detail": "Position closed outside StrikePlan. Strike confirms zero BTC exposure and no remaining BTC orders. Check Strike trade history for actual net P&L.",
+      "plan": {
+        "symbol": "BTC-USD",
+        "direction": "long",
+        "entry": 81277,
+        "stop": 80464.2,
+        "target": 82902.5,
+        "budget": 10,
+        "leverage": 3,
+        "feeBps": 5,
+        "slippageBps": 10,
+        "quantity": 0.01026,
+        "quantityText": "0.01026000",
+        "notional": 833.90202,
+        "margin": 277.96734,
+        "priceLoss": 8.33932800000003,
+        "estimatedFees": 0.8297323560000001,
+        "slippageBuffer": 0.8255626920000001,
+        "intendedLoss": 9.994623048000031,
+        "targetProfit": 15.835389165,
+        "rewardRisk": 1.5843908358473542,
+        "stopDistancePercent": 1.0000369108111802,
+        "capped": false,
+        "warnings": [
+          "Stop execution, gaps, funding, liquidation and fees can make actual losses exceed this estimate.",
+          "Margin is an estimate; Strike determines actual requirements."
+        ],
+        "rules": {
+          "symbol": "BTC-USD",
+          "stepSize": 0.00001,
+          "minQty": 0.00001,
+          "maxQty": 1000,
+          "tickSize": 0.1,
+          "minPrice": 10,
+          "maxPrice": 100000,
+          "minNotional": 100,
+          "precision": 8,
+          "source": "Strike testnet"
+        }
+      }
+    }
+  ]
+}
